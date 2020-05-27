@@ -2,6 +2,13 @@
 
 My "cookbook" for [the Janet Language](http://janet-lang.org)
 
+## Convert a string to a number
+
+```janet
+(scan-number "12345")  # => 12345
+(scan-number "12foo")  # => nil
+```
+
 ## Read a file by line
 
 Example -- add up number of chars in each line
