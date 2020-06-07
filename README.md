@@ -39,11 +39,20 @@ creating a sequence of all the lines:
   (printf "Hello %s %s" a b))
 ```
 
+## Command line arguments
+
+Available through (dyn :args).  So to get the first non-executable-name
+argument of the current janet invocation, or "0" if not present.
+
+```
+(def my-arg (scan-number (get (dyn :args) 1)))
+```
+
 ## Example Generator of Permutations
 
 Using a simple algorithm for permutations, create a generator which generates
-all permutations of an array.  (This can be important because permutations might
-otherwise generate a very long, unnecessary array.)
+all permutations of an array.  We use a generator so that we do not have to
+create an array of all n-factorial permutations of n items.
 
 ```
 (defn swap [a i j]
