@@ -48,6 +48,22 @@ argument of the current janet invocation, or "0" if not present.
 (def my-arg (scan-number (get (dyn :args) 1)))
 ```
 
+## Arrays
+
+### Increment a value in an array
+
+The ++,--,+=, X= (where X is +,-,\*,/,%) are actually macros so you can
+use them on an indexed data structure like an array.
+
+```
+(def a (array/new-filled 3 0))
+@[0 0 0]
+(++ (a 1))
+(+= (a 2 7))
+(pp a)
+@[0 1 7]
+```
+
 ## Example Generator of Permutations
 
 Using a simple algorithm for permutations, create a generator which generates
