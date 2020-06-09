@@ -97,3 +97,26 @@ create an array of all n-factorial permutations of n items.
 
 (print "Number of permutations of 8 items is: " (tst 8))
 ```
+
+## Simple Multithreading
+
+You can break a task up into a number of function calls and collect
+the results with the thread/ functions in Janet core.  The idea is
+to wrap the intended work function into a closure which calls the
+function with the arguments, and sends the result back.  This assumes
+the child will return without error.  (If not the receive will hang).
+
+```janet
+(defn work [n]
+  (var s 0)
+  (for x 0 n
+    (+= s (math/random)))
+  s)
+
+(def n 100000000)
+(for i 0 4
+  (thread/new (fn [parent]
+                (def result (work n))
+                (thread/send parent result))))
+(print "RESULT " (sum (seq [i :range [0 4]] (thread/receive math/inf))))
+```
