@@ -136,3 +136,20 @@ the child will return without error.  (If not the receive will hang).
                 (thread/send parent result))))
 (print "RESULT " (sum (seq [i :range [0 4]] (thread/receive math/inf))))
 ```
+## PEGs
+
+### Trick to capture and print your position for debugging PEGs
+
+Create the :p macro which you can just drop anywhere and it will
+print out the current match position -- even if the pattern never
+fully matches!
+
+```clojure
+(def pat
+  (peg/compile
+    ~{:p (drop (cmt ($) ,(fn [n] (print "AT: " n) n)))
+      :tag (* "<" :p (<- :w+) :p ">")
+      :main :tag}))
+
+(pp (peg/match pat ``<foo >``))
+```
