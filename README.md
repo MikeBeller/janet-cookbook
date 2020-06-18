@@ -80,6 +80,15 @@ use them on an indexed data structure like an array.
 @[0 1 7]
 ```
 
+## Tables
+
+### Create a table from a list of (k v k v)
+
+```clojure
+(def kv ["foo" 1 "bar" 2])
+(table ;kv)
+```
+
 ## Example Generator of Permutations
 
 Using a simple algorithm for permutations, create a generator which generates
