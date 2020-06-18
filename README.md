@@ -4,7 +4,7 @@ My "cookbook" for [the Janet Language](http://janet-lang.org)
 
 ## Convert a string to a number
 
-```janet
+```clojure
 (scan-number "12345")  # => 12345
 (scan-number "12foo")  # => nil
 ```
@@ -13,7 +13,7 @@ My "cookbook" for [the Janet Language](http://janet-lang.org)
 
 Example -- add up number of chars in each line
 
-```janet
+```clojure
 (with [fl (file/open "filepath")]
   (var sm 0)
   (loop [line :iterate fl]
@@ -25,7 +25,7 @@ Or alternatively -- if the file is small enough that you don't mind
 creating a sequence of all the lines:
 
 
-```janet
+```clojure
 (with [fl (file/open "filepath")]
   (sum
     (seq [line :iterate fl] (length line))))
@@ -33,7 +33,7 @@ creating a sequence of all the lines:
 
 ## Default Arguments
 
-```
+```clojure
 (defn say-hello [a &opt b]
   (default b "World!")
   (printf "Hello %s %s" a b))
@@ -44,8 +44,24 @@ creating a sequence of all the lines:
 Available through (dyn :args).  So to get the first non-executable-name
 argument of the current janet invocation, or "0" if not present.
 
-```
+```clojure
 (def my-arg (scan-number (get (dyn :args) 1)))
+```
+
+Alternatively you can create a function called main and it will get
+the command line args:
+
+```clojure
+(defn main [& args]
+  (print (scan-number (:in args 1))))
+```
+
+## Pretty Printing
+
+You can allow pretty printing arbitrary width by doing
+
+```clojure
+(set-dyn :pretty-format "%j")
 ```
 
 ## Arrays
@@ -55,7 +71,7 @@ argument of the current janet invocation, or "0" if not present.
 The ++,--,+=, X= (where X is +,-,\*,/,%) are actually macros so you can
 use them on an indexed data structure like an array.
 
-```
+```clojure
 (def a (array/new-filled 3 0))
 @[0 0 0]
 (++ (a 1))
@@ -70,7 +86,7 @@ Using a simple algorithm for permutations, create a generator which generates
 all permutations of an array.  We use a generator so that we do not have to
 create an array of all n-factorial permutations of n items.
 
-```
+```clojure
 (defn swap [a i j]
   (def t (a i))
   (put a i (a j))
@@ -106,7 +122,7 @@ to wrap the intended work function into a closure which calls the
 function with the arguments, and sends the result back.  This assumes
 the child will return without error.  (If not the receive will hang).
 
-```janet
+```clojure
 (defn work [n]
   (var s 0)
   (for x 0 n
