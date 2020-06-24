@@ -40,11 +40,13 @@ The augmented arithmetic assignment operators, ++,--,+=, <x>= (where X is +,-,\*
 are actually macros so you can use them on an indexed data structure like an array.
 
 ```clojure
-(def a (array/new-filled 3 0))
+janet:1:> (def a (array/new-filled 3 0))
 @[0 0 0]
-(++ (a 1))
-(+= (a 2 7))
-(pp a)
+janet:2:> (++ (a 1))
+1
+janet:3:> (+= (a 2) 7)
+7
+janet:4:> a
 @[0 1 7]
 ```
 
