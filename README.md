@@ -84,6 +84,43 @@ to realize that they return the same array that is passed to them.
 If you want a new array, use `sorted` and `sorted-by` instead, which return a new
 array.
 
+## Destructuring Arrays and Tuples
+
+Note, in general destructuring works for arrays and tuples interchangeably
+
+```clojure
+# these do the same thing
+(def [a b c] @[1 2 3])
+(def @[a b c] [1 2 3])
+```
+
+Also when destructuring, you can destructure a longer list into a shorter one,
+and vice versa.
+
+```clojure
+(def [a b] @[1 2 3])  # just sets a to 1 and b to 2
+(def [a b c] [1 2])   # sets a to 1, b to 2, c to nil
+```
+
+But `match` works a bit different.  Again arrays and tuples can be used
+interchangably for pattern and argument, but *a pattern that is too long
+will not match*.  E.g.:
+
+```clojure
+(match [1 2] @[a b c] true false)  # will return false
+```
+
+This means that to check, for example, whether the argument is a
+2-tuple or 3-tuple, you should always check 3-tuple pattern first.
+Bear in mind that, a pattern of length N will actually match anything
+greater than or equal to length N.
+
+```clojure
+(match [1 2] [a b c] "3-or-more-tuple" [a b] "2tuple")     # prints "2tuple"
+(match [1 2 3] [a b c] "3-or-more-tuple" [a b] "2tuple")   # returns "3-or-more-tuple"
+(match [1 2 3 4] [a b c] "3-or-more-tuple" [a b] "2tuple") # returns "3-or-more-tuple"
+```
+
 # Strings
 
 ## Convert a string to a number
