@@ -316,3 +316,11 @@ AT: 4
 (table ;kv)
 ```
 
+### Create a table from a list of kv pairs
+
+Surprisingly, not an obvious solution.  Got this idea from boot.janet
+
+```clojure
+(def kvp @[["foo" 1] ["bar" 2]])
+(table ;(mapcat identity kvp))
+```
