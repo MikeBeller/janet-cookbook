@@ -9,6 +9,8 @@ My "cookbook" for [the Janet Language](http://janet-lang.org)
 * [PEGs](#pegs)
 * [Miscellaneous](#miscellaneous)
 
+Also see various example programs in the 'examples' directory
+
 # Arrays and Tuples
 
 ## Working with arrays and tuples
