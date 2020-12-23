@@ -309,7 +309,7 @@ AT: 4
 
 ```
 
-## Tables
+## Tables and Structs
 
 ### Create a table from a list of (k v k v)
 
@@ -325,4 +325,19 @@ Surprisingly, not an obvious solution.  Got this idea from boot.janet
 ```clojure
 (def kvp @[["foo" 1] ["bar" 2]])
 (table ;(mapcat identity kvp))
+```
+
+### Convert a table to a struct and vice versa
+
+Easy to convert a table to a struct:
+
+```clojure
+(table/to-struct @{:foo 7})
+```
+
+But difficult to convert a struct back to a table.  It's another weird one based on the
+same trick as above:
+
+```clojure
+(table ;(mapcat identity (pairs @{:foo 7 :bar 8})))
 ```
