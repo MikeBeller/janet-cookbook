@@ -335,9 +335,8 @@ Easy to convert a table to a struct:
 (table/to-struct @{:foo 7})
 ```
 
-But difficult to convert a struct back to a table.  It's another weird one based on the
-same trick as above:
+No function to convert back.  Instead do: (from sogaiu on janetdocs)
 
 ```clojure
-(table ;(mapcat identity (pairs {:foo 7 :bar 8})))
+(table ;(kvs {:foo 7 :bar 8}))
 ```
