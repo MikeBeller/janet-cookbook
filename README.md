@@ -339,5 +339,5 @@ But difficult to convert a struct back to a table.  It's another weird one based
 same trick as above:
 
 ```clojure
-(table ;(mapcat identity (pairs @{:foo 7 :bar 8})))
+(table ;(mapcat identity (pairs {:foo 7 :bar 8})))
 ```
