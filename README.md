@@ -213,6 +213,15 @@ stream.
 
 Here are some tips and tricks that I've learned for working with them.
 
+**Note the examples below will simplify in the upcoming version of Janet
+(1.14?) as the main branch now contains code which converges iteration of
+generators with iteration of indexed data structures.  I will try to remember
+to revise the examples below when that is released.  But basically instead
+of using :generate in the loop you can just use :in like you would for a normal
+indexed data structure like an array.  This is very exciting for unifying iteration
+in Janet, and also helps makes generators "first class citizens" in the language
+(as they are in Python for example).**
+
 ## The Loop Macro Makes Generators Easy to Use
 
 Important point to understand about the below code is that nowhere in it is the
