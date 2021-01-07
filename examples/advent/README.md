@@ -2,6 +2,8 @@
 
 Example solutions in Janet to some Advent of Code problems.
 
+    https://adventofcode.com/
+
 Some also have python implementations for comparison purposes.
 
 A few things I learned:
