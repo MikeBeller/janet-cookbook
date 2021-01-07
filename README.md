@@ -143,7 +143,7 @@ Example -- add up number of chars in each line
 ```clojure
 (with [fl (file/open "filepath")]
   (var sm 0)
-  (loop [line :iterate fl]
+  (loop [line :iterate (file/read fl :line)]
     (+= sm (length line)))
    sm)
 ```
@@ -154,7 +154,7 @@ creating a sequence of all the lines:
 ```clojure
 (with [fl (file/open "filepath")]
   (sum
-    (seq [line :iterate fl] (length line))))
+    (seq [line :iterate (file/read fl :line)] (length line))))
 ```
 
 ## Command line arguments
