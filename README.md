@@ -205,6 +205,27 @@ the child will return without error.  (If not the receive will hang).
 (print "RESULT " (sum (seq [i :range [0 4]] (thread/receive math/inf))))
 ```
 
+## Capture Stdout
+
+This can be very useful for testing, for example:
+
+```clojure
+(defmacro- capture-stdout
+  [form]
+  (with-syms [buf res]
+    ~(do
+      (def ,buf (buffer/new 1024))
+      (with-dyns [:out ,buf]
+        (def ,res ,form)
+        [,res (string ,buf)]))))
+
+#try it
+
+#try it
+(def [result output] (capture-stdout (do (print "Hello, World!") 3)))
+(print "RESULT: " result " OUTPUT: " output)
+```
+
 # Generators
 
 Generators are a cool feature of Janet based on threads.  They allow you to express
