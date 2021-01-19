@@ -226,6 +226,17 @@ This can be very useful for testing, for example:
 (print "RESULT: " result " OUTPUT: " output)
 ```
 
+Note this has been recently added to spork as spork/test/capture-stdout
+
+## Save the current environment, and then restore it to a new repl
+
+```clojure
+(spit "repl.img" (make-image (curenv)))
+
+#restore it some time later
+(merge-into (curenv) (load-image (slurp "repl.img")))
+```
+
 # Generators
 
 Generators are a cool feature of Janet based on threads.  They allow you to express
@@ -234,14 +245,9 @@ stream.
 
 Here are some tips and tricks that I've learned for working with them.
 
-**Note the examples below will simplify in the upcoming version of Janet
-(1.14?) as the main branch now contains code which converges iteration of
-generators with iteration of indexed data structures.  I will try to remember
-to revise the examples below when that is released.  But basically instead
-of using :generate in the loop you can just use :in like you would for a normal
-indexed data structure like an array.  This is very exciting for unifying iteration
-in Janet, and also helps makes generators "first class citizens" in the language
-(as they are in Python for example).**
+As of Janet 1.14, fiber-based generators have become first class citizens
+in iteration.  The following examples have been revised accordingly.
+
 
 ## The Loop Macro Makes Generators Easy to Use
 
@@ -249,19 +255,19 @@ Important point to understand about the below code is that nowhere in it is the
 1000-element list realized.  So the code is O(1) in memory.
 
 ```clojure
-# Create a list of integers
+# all the below use O(1) memory not O(N)
+# These examples require Janet 1.14 or greater
+
+# Create a generator of integers
 (def r (generate [i :range [1 1000]] i))
-<fiber 0x55B709F9DC80>
-janet:3:> # Square them
-(def rsq (generate [i :generate r] (* i i)))
-<fiber 0x55B709F9FF60>
-janet:5:> # Add the result
-(var s 0)
-0
-(loop [i :generate rsq] (+= s i))
-nil
-janet:8:> s
-332833500
+
+# square them
+(def rsq (generate [i :in r] (* i i)))
+
+# sum the result (without using a lot of memory)
+(sum rsq)
+
+RESULT> 332833500
 ```
 
 ## Example Generator of Permutations
@@ -291,7 +297,7 @@ create an array of all n-factorial permutations of n items.
 
 (defn tst [n]
   (var c 0)
-  (loop [p :generate (permutations (range n))]
+  (loop [p :in (permutations (range n))]
     (++ c))
   c)
 
