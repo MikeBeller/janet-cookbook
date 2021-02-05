@@ -123,13 +123,38 @@ greater than or equal to length N.
 (match [1 2 3 4] [a b c] "3-or-more-tuple" [a b] "2tuple") # returns "3-or-more-tuple"
 ```
 
-# Strings
+# Strings and Buffers
 
 ## Convert a string to a number
 
 ```clojure
 (scan-number "12345")  # => 12345
 (scan-number "12foo")  # => nil
+```
+
+## Buffer to String
+
+```
+(string @"abc") #=> "abc"
+```
+
+## String (or buffer) to Array of Bytes
+
+```
+(string/bytes "abc") #=> (97 98 99)
+(string/bytes @"abc") #=> (97 98 99)
+```
+
+## Array of Integer Character Values to String
+
+```
+(string/from-bytes ;[97 98 99]) #=> "abc"
+```
+
+## Array of Integer Character Values to Buffer
+
+```
+(buffer/push-byte @"" ;[97 98 99]) #=> @"abc"
 ```
 
 # IO and OS Interaction
