@@ -204,7 +204,7 @@ the command line args:
 You can allow pretty printing arbitrary width by doing
 
 ```clojure
-(set-dyn :pretty-format "%j")
+(setdyn :pretty-format "%j")
 ```
 
 ## Simple Multithreading
