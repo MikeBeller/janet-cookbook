@@ -205,7 +205,12 @@ You can allow pretty printing arbitrary width by doing
 
 ```clojure
 (setdyn :pretty-format "%j")
+  # or
+(setdyn :pretty-format "%m")
 ```
+Using `%j` gets JDN formatting -- but won't work for recursive data structures
+or non-printable types.  Using `%m` gets fully printed Janet value with no
+truncation.  See table of printf formats [here](https://janet-lang.org/capi/writing-c-functions.html).
 
 ## Simple Multithreading
 
