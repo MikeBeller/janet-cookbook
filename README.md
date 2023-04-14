@@ -267,6 +267,64 @@ Note this has been recently added to spork as spork/test/capture-stdout
 (merge-into (curenv) (load-image (slurp "repl.img")))
 ```
 
+## Simple Network Server
+
+This TCP server echoes each incoming buffer of data, with a
+separate asynchronous fiber for each connection.
+
+```clojure
+(defn handler [conn]
+  (defer (:close conn)
+    (loop [msg :iterate (ev/read conn 1024) :while msg]
+      (ev/write conn msg))))
+
+(defn main [&]
+  (def my-server (net/listen "0.0.0.0" 9999))
+  (forever
+    (def conn (net/accept my-server))
+    (ev/call handler conn)))
+```
+
+However, what if you need to read line by line?  Unfortunately the
+ev/read call does not support the :line argument (like net/read).
+Here is a  hack that uses generators to wrap the buffered
+reads and return the lines one at a time to the handler:
+
+Note that the `byline` function can wrap any iterabl of strings,
+including a plain array.
+
+```
+(defn byline [chunks]
+  (var extra "")
+  (coro
+    (loop [chunk :in chunks]
+      (def lines (string/split "\n" (string extra chunk)))
+      (set extra (array/pop lines))
+      (loop [line :in lines]
+        (yield line)))))
+
+(defn reader [conn]
+  (generate [chunk :iterate (ev/read conn 1024)]
+    chunk))
+
+# test the byline function using a simple array
+(assert (deep= @["foo" "bar" "baz" "beef"] (values (byline ["foo\nbar\n" "ba" "z\nbee" "f\n"]))))
+
+(defn handler [conn]
+  (defer (:close conn)
+    (loop [js :in (byline (reader conn))]
+      (def resp (do-something-with js))  # replace this with whatever "do-something-with" you need
+      (ev/write conn resp)
+      (ev/write conn "\n"))))
+
+(defn main [&]
+  (def my-server (net/listen "0.0.0.0" 9999))
+  (forever
+    (def conn (net/accept my-server))
+    (ev/call handler conn)))
+```
+
+
 # Generators
 
 Generators are a cool feature of Janet based on threads.  They allow you to express
