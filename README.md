@@ -290,10 +290,10 @@ ev/read call does not support the :line argument (like net/read).
 Here is a  hack that uses generators to wrap the buffered
 reads and return the lines one at a time to the handler:
 
-Note that the `byline` function can wrap any iterabl of strings,
-including a plain array.
+Note that the `byline` function can wrap any iterable of strings,
+including a plain array of strings!
 
-```
+```clojure
 (defn byline [chunks]
   (var extra "")
   (coro
