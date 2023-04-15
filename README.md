@@ -19,7 +19,7 @@ Janet's indexed combinators (e.g. `map`, `filter`, `reduce`) return new
 arrays, regardless of whether the collection argument passed to them was
 a tuple or an array.
 
-```clojure
+```janet
 janet:3:> (filter even? (range 5))
 @[0 2 4]
 janet:4:> (filter even? [1 2 3 4])
@@ -29,7 +29,7 @@ janet:4:> (filter even? [1 2 3 4])
 If you need the result to be a tuple, you can force it with `tuple` or `tuple/slice`
 as follows:
 
-```clojure
+```janet
 janet:6:> (tuple ;(filter even? [1 2 3 4]))
 (2 4)
 janet:7:> (tuple/slice (filter even? [1 2 3 4]))
@@ -41,7 +41,7 @@ janet:7:> (tuple/slice (filter even? [1 2 3 4]))
 The augmented arithmetic assignment operators, ++,--,+=, <x>= (where X is +,-,\*,/,%)
 are actually macros so you can use them on an indexed data structure like an array.
 
-```clojure
+```janet
 janet:1:> (def a (array/new-filled 3 0))
 @[0 0 0]
 janet:2:> (++ (a 1))
@@ -61,7 +61,7 @@ sort.  The third is a little hard to find in the docs.
 * By the `<` ordering of a function of the items in the array (using `sort-by`)
 * By any comparison function on elements a b which returns true for a < b (using `sort` with extra argument)
 
-```clojure
+```janet
 # The natural ordering
 janet:2:> (sort @[5 1 "7" 3 "0"])
 @[1 3 5 "0" "7"]
@@ -90,7 +90,7 @@ array.
 
 Note, in general destructuring works for arrays and tuples interchangeably
 
-```clojure
+```janet
 # these do the same thing
 (def [a b c] @[1 2 3])
 (def @[a b c] [1 2 3])
@@ -99,7 +99,7 @@ Note, in general destructuring works for arrays and tuples interchangeably
 Also when destructuring, you can destructure a longer list into a shorter one,
 and vice versa.
 
-```clojure
+```janet
 (def [a b] @[1 2 3])  # just sets a to 1 and b to 2
 (def [a b c] [1 2])   # sets a to 1, b to 2, c to nil
 ```
@@ -108,7 +108,7 @@ But `match` works a bit different.  Again arrays and tuples can be used
 interchangably for pattern and argument, but *a pattern that is too long
 will not match*.  E.g.:
 
-```clojure
+```janet
 (match [1 2] @[a b c] true false)  # will return false
 ```
 
@@ -117,7 +117,7 @@ This means that to check, for example, whether the argument is a
 Bear in mind that, a pattern of length N will actually match anything
 greater than or equal to length N.
 
-```clojure
+```janet
 (match [1 2] [a b c] "3-or-more-tuple" [a b] "2tuple")     # prints "2tuple"
 (match [1 2 3] [a b c] "3-or-more-tuple" [a b] "2tuple")   # returns "3-or-more-tuple"
 (match [1 2 3 4] [a b c] "3-or-more-tuple" [a b] "2tuple") # returns "3-or-more-tuple"
@@ -127,7 +127,7 @@ greater than or equal to length N.
 
 ## Convert a string to a number
 
-```clojure
+```janet
 (scan-number "12345")  # => 12345
 (scan-number "12foo")  # => nil
 ```
@@ -165,7 +165,7 @@ N.B. -- I'm linux biased and didn't try this section on any other OS.
 
 Example -- add up number of chars in each line
 
-```clojure
+```janet
 (with [fl (file/open "filepath")]
   (var sm 0)
   (loop [line :iterate (file/read fl :line)]
@@ -176,7 +176,7 @@ Example -- add up number of chars in each line
 Or alternatively -- if the file is small enough that you don't mind
 creating a sequence of all the lines:
 
-```clojure
+```janet
 (with [fl (file/open "filepath")]
   (sum
     (seq [line :iterate (file/read fl :line)] (length line))))
@@ -187,14 +187,14 @@ creating a sequence of all the lines:
 Available through (dyn :args).  So to get the first non-executable-name
 argument of the current janet invocation, or "0" if not present.
 
-```clojure
+```janet
 (def my-arg (scan-number (get (dyn :args) 1)))
 ```
 
 Alternatively you can create a function called main and it will get
 the command line args:
 
-```clojure
+```janet
 (defn main [& args]
   (print (scan-number (:in args 1))))
 ```
@@ -203,7 +203,7 @@ the command line args:
 
 You can allow pretty printing arbitrary width by doing
 
-```clojure
+```janet
 (setdyn :pretty-format "%j")
   # or
 (setdyn :pretty-format "%m")
@@ -220,7 +220,7 @@ to wrap the intended work function into a closure which calls the
 function with the arguments, and sends the result back.  This assumes
 the child will return without error.  (If not the receive will hang).
 
-```clojure
+```janet
 (defn work [n]
   (var s 0)
   (for x 0 n
@@ -239,7 +239,7 @@ the child will return without error.  (If not the receive will hang).
 
 This can be very useful for testing, for example:
 
-```clojure
+```janet
 (defmacro- capture-stdout
   [form]
   (with-syms [buf res]
@@ -260,7 +260,7 @@ Note this has been recently added to spork as spork/test/capture-stdout
 
 ## Save the current environment, and then restore it to a new repl
 
-```clojure
+```janet
 (spit "repl.img" (make-image (curenv)))
 
 #restore it some time later
@@ -272,7 +272,7 @@ Note this has been recently added to spork as spork/test/capture-stdout
 This TCP server echoes each incoming buffer of data, with a
 separate asynchronous fiber for each connection.
 
-```clojure
+```janet
 (defn handler [conn]
   (defer (:close conn)
     (loop [msg :iterate (ev/read conn 1024) :while msg]
@@ -293,7 +293,7 @@ reads and return the lines one at a time to the handler:
 Note that the `byline` function can wrap any iterable of strings,
 including a plain array of strings!
 
-```clojure
+```janet
 (defn byline [chunks]
   (var extra "")
   (coro
@@ -342,7 +342,7 @@ in iteration.  The following examples have been revised accordingly.
 Important point to understand about the below code is that nowhere in it is the
 1000-element list realized.  So the code is O(1) in memory.
 
-```clojure
+```janet
 # all the below use O(1) memory not O(N)
 # These examples require Janet 1.14 or greater
 
@@ -364,7 +364,7 @@ Using a simple algorithm for permutations, create a generator which generates
 all permutations of an array.  We use a generator so that we do not have to
 create an array of all n-factorial permutations of n items.
 
-```clojure
+```janet
 (defn swap [a i j]
   (def t (a i))
   (put a i (a j))
@@ -406,7 +406,7 @@ fully matches.  Here is an example where we want to match something
 like an HTML tag, but we want to print out our progress (using :p) at
 a number of points in the pattern:
 
-```clojure
+```janet
 (def pat
   (peg/compile
     ~{:p (drop (cmt ($) ,(fn [n] (print "AT: " n) n)))
@@ -426,7 +426,7 @@ AT: 4
 
 ## Default Arguments
 
-```clojure
+```janet
 (defn say-hello [a &opt b]
   (default b "World!")
   (printf "Hello %s %s" a b))
@@ -437,7 +437,7 @@ AT: 4
 
 ### Create a table from a list of (k v k v)
 
-```clojure
+```janet
 (def kv ["foo" 1 "bar" 2])
 (table ;kv)
 ```
@@ -446,7 +446,7 @@ AT: 4
 
 Surprisingly, not an obvious solution.  Got this idea from boot.janet
 
-```clojure
+```janet
 (def kvp @[["foo" 1] ["bar" 2]])
 (table ;(mapcat identity kvp))
 ```
@@ -455,12 +455,12 @@ Surprisingly, not an obvious solution.  Got this idea from boot.janet
 
 Easy to convert a table to a struct:
 
-```clojure
+```janet
 (table/to-struct @{:foo 7})
 ```
 
 No function to convert back.  Instead do: (from sogaiu on janetdocs)
 
-```clojure
+```janet
 (table ;(kvs {:foo 7 :bar 8}))
 ```
